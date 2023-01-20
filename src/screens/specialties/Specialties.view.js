@@ -5,15 +5,16 @@ import SpecialtyGridTile from '../../components/specialtyGridTile';
 import {SPECIALTIES} from '../../data/dummy-data';
 
 const SpecialtiesScreen = ({navigation}) => {
-  function renderSpecialtyItem(itemData) {
-    function pressHandler() {
-      navigation.navigate('Topic', {
+  const renderSpecialtyItem = itemData => {
+    const pressHandler = () => {
+      navigation.navigate('Topics', {
         specialtyId: itemData.item.id,
+        topicTitle: `Temas de estudio para ${itemData.item.title}`,
       });
-    }
+    };
 
     return <SpecialtyGridTile item={itemData.item} onPress={pressHandler} />;
-  }
+  };
 
   return (
     <FlatList

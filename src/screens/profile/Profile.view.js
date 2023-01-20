@@ -1,9 +1,14 @@
-import {Text, View} from 'react-native';
+import {useContext} from 'react';
+import {Pressable, Text, View} from 'react-native';
+import {AuthContext} from '../../store/auth-context';
 
 const ProfileScreen = () => {
+  const authCtx = useContext(AuthContext);
   return (
     <View>
-      <Text>Profile</Text>
+      <Pressable onPress={authCtx.logout}>
+        <Text>Cerrar Sesion</Text>
+      </Pressable>
     </View>
   );
 };

@@ -30,8 +30,9 @@ const LoginScreen = () => {
   const authCtx = useContext(AuthContext);
 
   const buttonOpacity = useSharedValue(1);
+
   const register = () => {
-    // navigation.navigate('RegisterInformation');
+    // navigation.navigate('SignUp');
   };
 
   const onStateChange = () => {
