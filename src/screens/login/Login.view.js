@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useContext, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,6 +6,7 @@ import {
   Text,
   Dimensions,
   Pressable,
+  Alert,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -13,17 +14,21 @@ import Animated, {
   interpolate,
   withTiming,
 } from 'react-native-reanimated';
-import {
-  TapGestureHandler,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
-
+import {TapGestureHandler} from 'react-native-gesture-handler';
+import {AuthContext} from '../../store/auth-context';
 import {colors} from '../../common/constants';
-import CustomInputText from '../../components/customInputText/customInputText';
+import CustomInputText from '../../components/customInputText';
+import {login} from '../../util/auth';
 
 const {width, height} = Dimensions.get('window');
 
 const LoginScreen = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  const authCtx = useContext(AuthContext);
+
   const buttonOpacity = useSharedValue(1);
   const register = () => {
     // navigation.navigate('RegisterInformation');
@@ -67,8 +72,18 @@ const LoginScreen = () => {
     };
   });
 
-  const handleSubmit = () => {
-    // buttonOpacity.value = 0;
+  const loginHandler = async () => {
+    setIsAuthenticating(true);
+    try {
+      const token = await login(username, password);
+      authCtx.authenticate(token);
+    } catch (error) {
+      Alert.alert(
+        '¡Ups! Algo salió mal',
+        'Estas credenciales no coinciden con nuestros registros',
+      );
+      setIsAuthenticating(false);
+    }
   };
 
   return (
@@ -116,6 +131,9 @@ const LoginScreen = () => {
                 label="Correo electrónico"
                 name="email"
                 keyboardType="email-address"
+                value={username}
+                onChange={ev => setUsername(ev)}
+                // onChange={e => setUsername(e.target.value)}
               />
             </Animated.View>
             <Animated.View style={styles.password}>
@@ -123,16 +141,18 @@ const LoginScreen = () => {
                 label="Contraseña"
                 name="password"
                 secureTextEntry={true}
+                value={password}
+                onChange={ev => setPassword(ev)}
+                // onChange={e => setPassword(e.target.value)}
               />
             </Animated.View>
             <Animated.View style={styles.bottomButtons}>
               <Animated.View style={styles.loginButton}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={handleSubmit()}
+                <Pressable
+                  onPress={loginHandler}
                   style={styles.loginButtonAction}>
                   <Text style={{color: colors.white}}>Iniciar Sesión</Text>
-                </TouchableOpacity>
+                </Pressable>
               </Animated.View>
               <Animated.View>
                 <Pressable onPress={onCloseState}>

@@ -1,14 +1,17 @@
 import {useContext, useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Login, SignUp, Specialties} from '../screens';
+import {Login, Profile, SignUp, Specialties} from '../screens';
 import {Image, Text, View} from 'react-native';
 import AuthContextProvider, {AuthContext} from '../store/auth-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {colors} from '../common/constants';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-function AuthStack() {
+const AuthStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -36,23 +39,105 @@ function AuthStack() {
       <Stack.Screen name="Signup" component={SignUp} />
     </Stack.Navigator>
   );
-}
+};
 
-function AuthenticatedStack() {
-  const authCtx = useContext(AuthContext);
+const SpecialtiesStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {backgroundColor: '#ff0000'},
-        headerTintColor: 'white',
-        contentStyle: {backgroundColor: '#ff0000'},
+        headerStyle: {backgroundColor: colors.backgroundWhite},
+        headerTitleAlign: 'center',
+        headerTintColor: colors.primary,
+        contentStyle: {backgroundColor: colors.backgroundWhite},
+        initialRouteName: 'Specialties',
       }}>
-      <Stack.Screen name="Specialties" component={Specialties} />
+      <Stack.Screen
+        name="Añade el tema que desees estudiar"
+        component={Specialties}
+      />
     </Stack.Navigator>
   );
-}
+};
 
-function Navigation() {
+const ProfileStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {backgroundColor: colors.backgroundWhite},
+        headerTitleAlign: 'center',
+        headerTintColor: colors.primary,
+        contentStyle: {backgroundColor: colors.backgroundWhite},
+        initialRouteName: 'Profile',
+      }}>
+      <Stack.Screen name="Mi perfil" component={Profile} />
+    </Stack.Navigator>
+  );
+};
+
+const MainTabNavigation = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        keyboardHidesTabBar: true,
+        headerShown: false,
+      }}
+      initialRouteName="SpecialtiesStack">
+      <Tab.Screen
+        name="SpecialtiesStack"
+        component={SpecialtiesStack}
+        options={{
+          tabBarIcon: ({focused}) => {
+            return <Text>Ícono</Text>;
+          },
+          tabBarLabel: ({focused}) => {
+            return <Text>Inicio</Text>;
+          },
+        }}
+      />
+      <Tab.Screen
+        name="ProfileStack"
+        component={ProfileStack}
+        options={{
+          tabBarIcon: ({focused}) => {
+            return <Text>Ícono</Text>;
+          },
+          tabBarLabel: ({focused}) => {
+            return <Text>Inicio</Text>;
+          },
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+const AuthenticatedStack = () => {
+  const authCtx = useContext(AuthContext);
+  return (
+    /*
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {backgroundColor: colors.backgroundWhite},
+        headerTitleAlign: 'center',
+        headerTintColor: colors.primary,
+        contentStyle: {backgroundColor: colors.backgroundWhite},
+      }}>
+      <Stack.Screen
+        name="Añade el tema que desees estudiar"
+        component={Specialties}
+      />
+    </Stack.Navigator>
+    */
+    <Stack.Navigator>
+      <Stack.Screen
+        name="MainTabNavigation"
+        component={MainTabNavigation}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const Navigation = () => {
   const authCtx = useContext(AuthContext);
 
   return (
@@ -61,9 +146,9 @@ function Navigation() {
       {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
   );
-}
+};
 
-function Root() {
+const Root = () => {
   const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   const authCtx = useContext(AuthContext);
@@ -91,7 +176,7 @@ function Root() {
   }
 
   return <Navigation />;
-}
+};
 
 const App = () => {
   return (
