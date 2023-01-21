@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -7,9 +7,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import {colors} from '../../common/constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useState} from 'react';
 
 const QuestionnaireScreen = () => {
   const flipDegree = useSharedValue(0);
+
+  const [discontinueCardModalVisible, setDiscontinueCardModalVisible] =
+    useState(false);
 
   const frontAnimatedStyle = useAnimatedStyle(() => {
     const frontInterpolate = interpolate(flipDegree.value, [0, 1], [0, 180]);
@@ -59,6 +63,14 @@ const QuestionnaireScreen = () => {
               <Text style={styles.seeAnswerButtonText}>Ver Respuesta</Text>
             </Pressable>
           </View>
+          <View style={styles.discontinueCardButton}>
+            <Pressable
+              onPress={() => {
+                setDiscontinueCardModalVisible(!discontinueCardModalVisible);
+              }}>
+              <Text style={styles.discontinueCardText}>Suspender tarjeta</Text>
+            </Pressable>
+          </View>
         </Animated.View>
         <Animated.View
           style={[styles.flipCard, styles.flipCardBack, backAnimatedStyle]}>
@@ -72,8 +84,55 @@ const QuestionnaireScreen = () => {
             Tumor primario cardiaco más frecuente:
           </Text>
           <Text style={styles.cardAnswer}>Mixoma</Text>
+          <Text style={styles.gradeQuestion}>
+            Califica el nivel de la pregunta
+          </Text>
+          <View style={styles.bottomLevelButtons}>
+            <Pressable style={styles.easyLevelButton}>
+              <Text style={styles.levelText}>Fácil</Text>
+            </Pressable>
+            <Pressable style={styles.normalLevelButton}>
+              <Text style={styles.levelText}>Normal</Text>
+            </Pressable>
+            <Pressable style={styles.hardLevelButton}>
+              <Text style={styles.levelText}>Difícil</Text>
+            </Pressable>
+          </View>
         </Animated.View>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={discontinueCardModalVisible}>
+        <View style={styles.container}>
+          <View style={styles.flipCard}>
+            <Text style={styles.cardTitle}>
+              ¿Estás seguro de que quieres suspender?
+            </Text>
+            <Text style={styles.cardTextModal}>
+              Suspender una tarjeta la sacará de tus sesiones de estudio de
+              ahora en adelante. Pero tranquilo, podrás volverla a activar en el
+              buscador de suspendidas.
+            </Text>
+            <View style={styles.bottomButtonsModal}>
+              <Pressable
+                onPress={() =>
+                  setDiscontinueCardModalVisible(!discontinueCardModalVisible)
+                }
+                style={styles.previousQuestionButton}>
+                <Text>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                onPress={() =>
+                  setDiscontinueCardModalVisible(!discontinueCardModalVisible)
+                }
+                style={styles.seeAnswerButton}>
+                <Text style={styles.seeAnswerButtonText}>Suspender</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -113,6 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.primary,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   cardText: {
     fontSize: 14,
@@ -121,6 +181,11 @@ const styles = StyleSheet.create({
   },
   cardTextFront: {
     marginTop: 35,
+  },
+  cardTextModal: {
+    padding: 10,
+    marginTop: 50,
+    textAlign: 'justify',
   },
   cardAnswer: {
     marginTop: 20,
@@ -133,6 +198,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     bottom: 40,
+  },
+  bottomButtonsModal: {
+    flex: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 20,
+  },
+  discontinueCardButton: {
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 10,
+  },
+  discontinueCardText: {
+    color: colors.skyblue,
   },
   previousQuestionButton: {
     flex: 1,
@@ -154,6 +234,46 @@ const styles = StyleSheet.create({
   },
   seeAnswerButtonText: {
     color: colors.secondary,
+  },
+  gradeQuestion: {
+    marginTop: 10,
+  },
+  bottomLevelButtons: {
+    flex: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 20,
+  },
+  easyLevelButton: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 5,
+    borderRadius: 10,
+    marginStart: 4,
+    marginEnd: 2,
+    backgroundColor: colors.green,
+  },
+  normalLevelButton: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 5,
+    borderRadius: 10,
+    marginStart: 2,
+    marginEnd: 2,
+    backgroundColor: colors.yellow,
+  },
+  hardLevelButton: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 5,
+    borderRadius: 10,
+    marginStart: 2,
+    marginEnd: 4,
+    backgroundColor: colors.red,
+  },
+  levelText: {
+    color: colors.backgroundWhite,
   },
 });
 
