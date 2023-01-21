@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Specialties, Topics} from '../screens';
+import {Questionnaire, Specialties, Topics} from '../screens';
 import {colors} from '../common/constants';
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +26,11 @@ const SpecialtiesStack = () => {
           title: route.params.topicTitle || 'Temas de estudio',
           headerTitleStyle: {fontSize: 15},
         })}
+      />
+      <Stack.Screen
+        name="Questionnaire"
+        component={Questionnaire}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );

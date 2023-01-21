@@ -134,7 +134,6 @@ const LoginScreen = () => {
                 keyboardType="email-address"
                 value={username}
                 onChange={ev => setUsername(ev)}
-                // onChange={e => setUsername(e.target.value)}
               />
             </Animated.View>
             <Animated.View style={styles.password}>
@@ -144,7 +143,6 @@ const LoginScreen = () => {
                 secureTextEntry={true}
                 value={password}
                 onChange={ev => setPassword(ev)}
-                // onChange={e => setPassword(e.target.value)}
               />
             </Animated.View>
             <Animated.View style={styles.bottomButtons}>
