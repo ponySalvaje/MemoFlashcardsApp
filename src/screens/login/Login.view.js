@@ -18,7 +18,7 @@ import {TapGestureHandler} from 'react-native-gesture-handler';
 import {AuthContext} from '../../store/auth-context';
 import {colors} from '../../common/constants';
 import CustomInputText from '../../components/customInputText';
-import {login} from '../../util/auth';
+import {login} from '../../api/auth.api';
 
 const {width, height} = Dimensions.get('window');
 
@@ -76,8 +76,9 @@ const LoginScreen = () => {
   const loginHandler = async () => {
     setIsAuthenticating(true);
     try {
-      const token = await login(username, password);
-      authCtx.authenticate(token);
+      const result = await login(username, password);
+      console.log('result.data.token: ', result.data.token);
+      authCtx.authenticate(result.data.token);
     } catch (error) {
       Alert.alert(
         '¡Ups! Algo salió mal',
