@@ -1,5 +1,16 @@
-import {Pressable, View, Text, StyleSheet, Platform, Image} from 'react-native';
+import {
+  Pressable,
+  View,
+  Text,
+  StyleSheet,
+  Platform,
+  Image,
+  Dimensions,
+} from 'react-native';
 import {colors} from '../common/constants';
+
+const {width} = Dimensions.get('window');
+const cardWithSize = (width - 16 * 2 * 2) / 2;
 
 function SpecialtyGridTile({item, onPress}) {
   return (
@@ -30,7 +41,7 @@ export default SpecialtyGridTile;
 
 const styles = StyleSheet.create({
   gridItem: {
-    flex: 1,
+    width: cardWithSize,
     margin: 16,
     height: 150,
     borderRadius: 8,
@@ -58,6 +69,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 16,
+    textAlign: 'center',
   },
   free: {
     fontSize: 13,

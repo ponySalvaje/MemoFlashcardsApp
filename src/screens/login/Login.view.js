@@ -77,7 +77,6 @@ const LoginScreen = () => {
     setIsAuthenticating(true);
     try {
       const result = await login(username, password);
-      console.log('result.data.token: ', result.data.token);
       authCtx.authenticate(result.data.token);
     } catch (error) {
       Alert.alert(
