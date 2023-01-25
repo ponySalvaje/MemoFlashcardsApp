@@ -1,10 +1,23 @@
+import {useIsFocused} from '@react-navigation/native';
+import {useCallback, useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
-
 import TopicGridTile from '../../components/topicGridTile';
+import {getTopics} from '../../api/topics.api';
 
-import {TOPICS} from '../../data/dummy-data';
+const TopicsScreen = ({route, navigation}) => {
+  const [topics, setTopics] = useState([]);
 
-const TopicsScreen = ({navigation}) => {
+  const isFocused = useIsFocused();
+
+  const topicsList = useCallback(async () => {
+    const result = await getTopics(route.params.specialtyId);
+    setTopics(result.data.content);
+  }, [navigation, isFocused]);
+
+  useEffect(() => {
+    topicsList();
+  }, [topicsList]);
+
   const renderTopicItem = itemData => {
     const pressHandler = () => {
       navigation.navigate('Questionnaire', {
@@ -17,7 +30,7 @@ const TopicsScreen = ({navigation}) => {
 
   return (
     <FlatList
-      data={TOPICS}
+      data={topics}
       keyExtractor={item => item.id}
       renderItem={renderTopicItem}
       numColumns={2}

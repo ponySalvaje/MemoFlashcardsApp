@@ -1,5 +1,15 @@
-import {Pressable, View, Text, StyleSheet, Platform, Image} from 'react-native';
+import {
+  Pressable,
+  View,
+  Text,
+  StyleSheet,
+  Platform,
+  Dimensions,
+} from 'react-native';
 import {colors} from '../common/constants';
+
+const {width} = Dimensions.get('window');
+const cardWithSize = (width - 16 * 2 * 2) / 2;
 
 function TopicGridTile({item, onPress}) {
   return (
@@ -29,7 +39,7 @@ export default TopicGridTile;
 
 const styles = StyleSheet.create({
   gridItem: {
-    flex: 1,
+    width: cardWithSize,
     margin: 16,
     height: 150,
     borderRadius: 8,

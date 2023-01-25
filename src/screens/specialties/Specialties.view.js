@@ -5,8 +5,6 @@ import {getSpecialties} from '../../api/specialties.api';
 
 import SpecialtyGridTile from '../../components/specialtyGridTile';
 
-import {SPECIALTIES} from '../../data/dummy-data';
-
 const SpecialtiesScreen = ({navigation}) => {
   const [specialties, setSpecialties] = useState([]);
 
