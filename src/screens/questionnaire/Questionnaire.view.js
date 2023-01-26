@@ -1,4 +1,11 @@
-import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -11,6 +18,9 @@ import {useCallback, useEffect, useState} from 'react';
 import {getCards} from '../../api/cards.api';
 import {useIsFocused} from '@react-navigation/native';
 import RenderHTML from 'react-native-render-html';
+
+const {width} = Dimensions.get('window');
+const widthCard = width - 20;
 
 const QuestionnaireScreen = ({route, navigation}) => {
   const flipDegree = useSharedValue(0);
@@ -66,8 +76,14 @@ const QuestionnaireScreen = ({route, navigation}) => {
   };
 
   const gradeQuestion = difficulty => {
-    setCurrentCard(previousCard => previousCard + 1);
     flipCard();
+    setTimeout(() => {
+      setCurrentCard(previousCard => previousCard + 1);
+    }, 500); // change question in the middle of animation
+  };
+
+  const seePreviousCard = () => {
+    setCurrentCard(previousCard => previousCard - 1);
   };
 
   const prepareHtml = html => {
@@ -84,17 +100,30 @@ const QuestionnaireScreen = ({route, navigation}) => {
           <View>
             <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
               <Text style={styles.cardTitle}>{cards[currentCard].name}</Text>
-              <RenderHTML
-                style={[styles.cardText, styles.cardTextFront]}
-                contentWidth={100}
-                source={{html: prepareHtml(cards[currentCard].question)}}
-              />
-              <Text style={styles.cardAnswer}>_ _ _ _ _ _ _ _ _</Text>
+              <View style={[styles.cardText, styles.cardTextFront]}>
+                <RenderHTML
+                  contentWidth={100}
+                  source={{html: prepareHtml(cards[currentCard].question)}}
+                />
+              </View>
               <View style={styles.bottomButtons}>
-                <Pressable style={styles.previousQuestionButton}>
-                  <Text>Ver Anterior</Text>
-                </Pressable>
-                <Pressable onPress={flipCard} style={styles.seeAnswerButton}>
+                {currentCard == 0 ? (
+                  <></>
+                ) : (
+                  <Pressable
+                    style={styles.previousQuestionButton}
+                    onPress={seePreviousCard}>
+                    <Text>Ver Anterior</Text>
+                  </Pressable>
+                )}
+                <Pressable
+                  onPress={flipCard}
+                  style={[
+                    styles.seeAnswerButton,
+                    currentCard == 0
+                      ? styles.onlyBottomButton
+                      : styles.notOnlyBottomButton,
+                  ]}>
                   <Text style={styles.seeAnswerButtonText}>Ver Respuesta</Text>
                 </Pressable>
               </View>
@@ -123,9 +152,6 @@ const QuestionnaireScreen = ({route, navigation}) => {
                 contentWidth={100}
                 source={{html: prepareHtml(cards[currentCard].answer)}}
               />
-              <Text style={styles.gradeQuestion}>
-                Califica el nivel de la pregunta
-              </Text>
               <View style={styles.bottomLevelButtons}>
                 <Pressable
                   style={styles.easyLevelButton}
@@ -181,7 +207,7 @@ const QuestionnaireScreen = ({route, navigation}) => {
                 onPress={() =>
                   setDiscontinueCardModalVisible(!discontinueCardModalVisible)
                 }
-                style={styles.seeAnswerButton}>
+                style={styles.dismissQuestionButton}>
                 <Text style={styles.seeAnswerButtonText}>Suspender</Text>
               </Pressable>
             </View>
@@ -207,8 +233,8 @@ const styles = StyleSheet.create({
     left: 20,
   },
   flipCard: {
-    width: 300,
-    height: 200,
+    width: widthCard,
+    height: 250,
     borderRadius: 10,
     alignItems: 'center',
     paddingTop: 5,
@@ -235,7 +261,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   cardTextFront: {
-    marginTop: 35,
+    marginTop: 25,
   },
   cardTextModal: {
     padding: 10,
@@ -243,7 +269,6 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
   },
   cardAnswer: {
-    marginTop: 20,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -279,7 +304,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
   },
   seeAnswerButton: {
-    flex: 1,
     marginStart: 5,
     marginEnd: 10,
     padding: 5,
@@ -287,8 +311,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.primary,
   },
+  onlyBottomButton: {
+    width: widthCard / 2,
+  },
+  notOnlyBottomButton: {
+    flex: 1,
+  },
   seeAnswerButtonText: {
     color: colors.secondary,
+  },
+  dismissQuestionButton: {
+    flex: 1,
+    marginStart: 5,
+    marginEnd: 10,
+    padding: 5,
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: colors.primary,
   },
   gradeQuestion: {
     marginTop: 10,
@@ -298,7 +337,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
   },
   easyLevelButton: {
     flex: 1,
