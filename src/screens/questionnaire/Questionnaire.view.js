@@ -7,10 +7,29 @@ import Animated, {
 } from 'react-native-reanimated';
 import {colors} from '../../common/constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
+import {getCards} from '../../api/cards.api';
+import {useIsFocused} from '@react-navigation/native';
+import RenderHTML from 'react-native-render-html';
 
-const QuestionnaireScreen = () => {
+const QuestionnaireScreen = ({route, navigation}) => {
   const flipDegree = useSharedValue(0);
+
+  const [cards, setCards] = useState([]);
+
+  const [currentCard, setCurrentCard] = useState();
+
+  const isFocused = useIsFocused();
+
+  const cardsList = useCallback(async () => {
+    const result = await getCards(route.params.topicId);
+    setCards(result.data.content);
+    setCurrentCard(0);
+  }, [navigation, isFocused]);
+
+  useEffect(() => {
+    cardsList();
+  }, [cardsList]);
 
   const [discontinueCardModalVisible, setDiscontinueCardModalVisible] =
     useState(false);
@@ -46,60 +65,96 @@ const QuestionnaireScreen = () => {
     if (flipDegree.value == 1) flipDegree.value = 0;
   };
 
+  const gradeQuestion = difficulty => {
+    setCurrentCard(previousCard => previousCard + 1);
+    flipCard();
+  };
+
+  const prepareHtml = html => {
+    newHtml = html
+      .replaceAll('<font', '<span')
+      .replaceAll('</font>', '</span>');
+    return newHtml;
+  };
+
   return (
     <View style={styles.container}>
-      <View>
-        <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
-          <Text style={styles.cardTitle}>Tumores</Text>
-          <Text style={[styles.cardText, styles.cardTextFront]}>
-            Tumor primario cardiaco más frecuente:
-          </Text>
-          <Text style={styles.cardAnswer}>_ _ _ _ _ _ _ _ _</Text>
-          <View style={styles.bottomButtons}>
-            <Pressable style={styles.previousQuestionButton}>
-              <Text>Ver Anterior</Text>
-            </Pressable>
-            <Pressable onPress={flipCard} style={styles.seeAnswerButton}>
-              <Text style={styles.seeAnswerButtonText}>Ver Respuesta</Text>
-            </Pressable>
+      {cards[currentCard] ? (
+        <>
+          <View>
+            <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
+              <Text style={styles.cardTitle}>{cards[currentCard].name}</Text>
+              <RenderHTML
+                style={[styles.cardText, styles.cardTextFront]}
+                contentWidth={100}
+                source={{html: prepareHtml(cards[currentCard].question)}}
+              />
+              <Text style={styles.cardAnswer}>_ _ _ _ _ _ _ _ _</Text>
+              <View style={styles.bottomButtons}>
+                <Pressable style={styles.previousQuestionButton}>
+                  <Text>Ver Anterior</Text>
+                </Pressable>
+                <Pressable onPress={flipCard} style={styles.seeAnswerButton}>
+                  <Text style={styles.seeAnswerButtonText}>Ver Respuesta</Text>
+                </Pressable>
+              </View>
+              <View style={styles.discontinueCardButton}>
+                <Pressable
+                  onPress={() => {
+                    setDiscontinueCardModalVisible(
+                      !discontinueCardModalVisible,
+                    );
+                  }}>
+                  <Text style={styles.discontinueCardText}>
+                    Suspender tarjeta
+                  </Text>
+                </Pressable>
+              </View>
+            </Animated.View>
+            <Animated.View
+              style={[styles.flipCard, styles.flipCardBack, backAnimatedStyle]}>
+              <View style={styles.flipCardGroup}>
+                <Pressable onPress={flipCard} style={styles.flipIcon}>
+                  <Ionicons size={22} name="sync" />
+                </Pressable>
+              </View>
+              <Text style={styles.cardTitle}>Respuesta</Text>
+              <RenderHTML
+                contentWidth={100}
+                source={{html: prepareHtml(cards[currentCard].answer)}}
+              />
+              <Text style={styles.gradeQuestion}>
+                Califica el nivel de la pregunta
+              </Text>
+              <View style={styles.bottomLevelButtons}>
+                <Pressable
+                  style={styles.easyLevelButton}
+                  onPress={() => {
+                    gradeQuestion('easy');
+                  }}>
+                  <Text style={styles.levelText}>Fácil</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.normalLevelButton}
+                  onPress={() => {
+                    gradeQuestion('medium');
+                  }}>
+                  <Text style={styles.levelText}>Normal</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.hardLevelButton}
+                  onPress={() => {
+                    gradeQuestion('hard');
+                  }}>
+                  <Text style={styles.levelText}>Difícil</Text>
+                </Pressable>
+              </View>
+            </Animated.View>
           </View>
-          <View style={styles.discontinueCardButton}>
-            <Pressable
-              onPress={() => {
-                setDiscontinueCardModalVisible(!discontinueCardModalVisible);
-              }}>
-              <Text style={styles.discontinueCardText}>Suspender tarjeta</Text>
-            </Pressable>
-          </View>
-        </Animated.View>
-        <Animated.View
-          style={[styles.flipCard, styles.flipCardBack, backAnimatedStyle]}>
-          <View style={styles.flipCardGroup}>
-            <Pressable onPress={flipCard} style={styles.flipIcon}>
-              <Ionicons size={22} name="sync" />
-            </Pressable>
-          </View>
-          <Text style={styles.cardTitle}>Respuesta</Text>
-          <Text style={styles.cardText}>
-            Tumor primario cardiaco más frecuente:
-          </Text>
-          <Text style={styles.cardAnswer}>Mixoma</Text>
-          <Text style={styles.gradeQuestion}>
-            Califica el nivel de la pregunta
-          </Text>
-          <View style={styles.bottomLevelButtons}>
-            <Pressable style={styles.easyLevelButton}>
-              <Text style={styles.levelText}>Fácil</Text>
-            </Pressable>
-            <Pressable style={styles.normalLevelButton}>
-              <Text style={styles.levelText}>Normal</Text>
-            </Pressable>
-            <Pressable style={styles.hardLevelButton}>
-              <Text style={styles.levelText}>Difícil</Text>
-            </Pressable>
-          </View>
-        </Animated.View>
-      </View>
+        </>
+      ) : (
+        <></>
+      )}
       <Modal
         animationType="slide"
         transparent={true}
