@@ -1,43 +1,12 @@
 import {useContext, useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Login, SignUp} from '../screens';
-import {Image, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import AuthContextProvider, {AuthContext} from '../store/auth-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {MainTabNavigation} from '../navigation';
+import {AuthStack, MainTabNavigation} from '../navigation';
 
 const Stack = createNativeStackNavigator();
-
-const AuthStack = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {
-          elevation: 0,
-          shadowOpacity: 0,
-          height: 70,
-        },
-        headerTitleAlign: 'center',
-        headerLeft: () => {
-          return (
-            <Image
-              style={{marginHorizontal: 15, width: 40, height: 40}}
-              source={require('../assets/logo/memo_logo.png')}
-            />
-          );
-        },
-      }}
-      initialRouteName="Login">
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen name="Signup" component={SignUp} />
-    </Stack.Navigator>
-  );
-};
 
 const AuthenticatedStack = () => {
   const authCtx = useContext(AuthContext);

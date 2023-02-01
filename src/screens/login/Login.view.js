@@ -14,7 +14,6 @@ import Animated, {
   interpolate,
   withTiming,
 } from 'react-native-reanimated';
-import {TapGestureHandler} from 'react-native-gesture-handler';
 import {AuthContext} from '../../store/auth-context';
 import {colors} from '../../common/constants';
 import CustomInputText from '../../components/customInputText';
@@ -22,7 +21,7 @@ import {login} from '../../api/auth.api';
 
 const {width, height} = Dimensions.get('window');
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -32,7 +31,7 @@ const LoginScreen = () => {
   const buttonOpacity = useSharedValue(1);
 
   const register = () => {
-    // navigation.navigate('SignUp');
+    navigation.navigate('SignUp');
   };
 
   const onStateChange = () => {
@@ -108,11 +107,11 @@ const LoginScreen = () => {
             <Text style={styles.textButton}>Iniciar Sesión</Text>
           </Animated.View>
         </Pressable>
-        <TapGestureHandler onHandlerStateChange={register}>
+        <Pressable onPress={register}>
           <Animated.View style={[styles.button, buttonAnimatedStyle]}>
             <Text style={styles.textButton}>Registrarse</Text>
           </Animated.View>
-        </TapGestureHandler>
+        </Pressable>
         <Animated.View style={[buttonAnimatedStyle]}>
           <Text style={styles.forgotPasswordText}>
             ¿Olvidaste tu contraseña?

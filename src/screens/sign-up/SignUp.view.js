@@ -1,11 +1,132 @@
-import {Text, View} from 'react-native';
+import {useContext, useState} from 'react';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
+import {register} from '../../api/auth.api';
+import {colors} from '../../common/constants';
+import CustomInputText from '../../components/customInputText';
+import {AuthContext} from '../../store/auth-context';
 
-const SignUpScreen = () => {
+const SignUpScreen = ({navigation}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  const authCtx = useContext(AuthContext);
+
+  const buildRegisterDTO = () => {
+    return {
+      name: name,
+      email: email,
+      password: password,
+    };
+  };
+
+  const handleRegister = async () => {
+    if (isRegistering) return;
+    setIsRegistering(true);
+    try {
+      const result = await register(buildRegisterDTO());
+      authCtx.authenticate(result.data.token);
+    } catch (error) {
+      Alert.alert(
+        '¡Ups! Algo salió mal',
+        'Hubo un error al registrar el usuario',
+      );
+      setIsRegistering(false);
+    }
+  };
+
+  const cancelRegister = () => {
+    navigation.navigate('Login');
+  };
+
   return (
-    <View>
-      <Text>SignUp</Text>
+    <View style={styles.container}>
+      <View style={styles.registerFieldsContainer}>
+        <View style={styles.registerField}>
+          <CustomInputText
+            label="Nombres y Apellidos"
+            name="name"
+            value={name}
+            onChange={ev => setName(ev)}
+          />
+        </View>
+        <View style={styles.registerField}>
+          <CustomInputText
+            label="Correo electrónico"
+            name="email"
+            keyboardType="email-address"
+            value={email}
+            onChange={ev => setEmail(ev)}
+          />
+        </View>
+        <View style={styles.registerField}>
+          <CustomInputText
+            label="Crea una contraseña"
+            name="password"
+            secureTextEntry={true}
+            value={password}
+            onChange={ev => setPassword(ev)}
+          />
+        </View>
+        <View style={styles.registerField}>
+          <CustomInputText
+            label="Confirmar contraseña"
+            name="password"
+            secureTextEntry={true}
+            value={confirmPassword}
+            onChange={ev => setConfirmPassword(ev)}
+          />
+        </View>
+        <View style={styles.bottomButtons}>
+          <View style={[styles.bottomButton, styles.registerButton]}>
+            <Pressable onPress={handleRegister} style={styles.registerButton}>
+              <Text style={styles.buttonText}>Registrar</Text>
+            </Pressable>
+          </View>
+          <View style={[styles.bottomButton, styles.cancelButton]}>
+            <Pressable onPress={cancelRegister} style={styles.cancelButton}>
+              <Text style={styles.buttonText}>Cancelar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
     </View>
   );
 };
 
 export default SignUpScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  registerFieldsContainer: {
+    padding: 20,
+  },
+  registerField: {
+    paddingBottom: 20,
+  },
+  bottomButtons: {
+    marginTop: 25,
+  },
+  bottomButton: {
+    borderRadius: 4,
+    height: 40,
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: colors.white,
+    textAlign: 'center',
+  },
+  registerButton: {
+    backgroundColor: colors.primary,
+  },
+  cancelButton: {
+    backgroundColor: colors.danger,
+  },
+});
