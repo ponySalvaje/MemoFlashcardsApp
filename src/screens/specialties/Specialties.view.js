@@ -1,18 +1,25 @@
 import {useIsFocused} from '@react-navigation/native';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useContext, useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 import {getSpecialties} from '../../api/specialties.api';
 
 import SpecialtyGridTile from '../../components/specialtyGridTile';
+import {AuthContext} from '../../store/auth-context';
 
 const SpecialtiesScreen = ({navigation}) => {
   const [specialties, setSpecialties] = useState([]);
 
   const isFocused = useIsFocused();
 
+  const authCtx = useContext(AuthContext);
+
   const specialtiesList = useCallback(async () => {
-    const result = await getSpecialties();
-    setSpecialties(result.data.content);
+    try {
+      const result = await getSpecialties();
+      setSpecialties(result.data.content);
+    } catch (error) {
+      authCtx.logout();
+    }
   }, [navigation, isFocused]);
 
   useEffect(() => {

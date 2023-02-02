@@ -1,15 +1,25 @@
 import {useContext, useState} from 'react';
 import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import {register} from '../../api/auth.api';
-import {colors} from '../../common/constants';
+import {colors, semesters, universities} from '../../common/constants';
+import CustomDropdown from '../../components/customerDropdown';
 import CustomInputText from '../../components/customInputText';
 import {AuthContext} from '../../store/auth-context';
 
 const SignUpScreen = ({navigation}) => {
   const [name, setName] = useState('');
+  const [university, setUniversity] = useState('');
+  const [semester, setSemester] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [openUniversity, setOpenUniversity] = useState(false);
+  const [universityItems, setUniversityItems] = useState(universities);
+
+  const [openSemester, setOpenSemester] = useState(false);
+  const [semesterItems, setSemesterItems] = useState(semesters);
 
   const [isRegistering, setIsRegistering] = useState(false);
 
@@ -53,6 +63,47 @@ const SignUpScreen = ({navigation}) => {
             onChange={ev => setName(ev)}
           />
         </View>
+        <View style={styles.registerField}>
+          <CustomDropdown
+            label="Universidad"
+            value={university}
+            open={openUniversity}
+            items={universityItems}
+            setOpen={setOpenUniversity}
+            setValue={setUniversity}
+            setItems={setUniversityItems}
+            searchable={true}
+            placeholder=""
+          />
+        </View>
+        {openUniversity ? (
+          <>
+            <View style={styles.registerField}>
+              <CustomInputText
+                label="Soy un estudiante de"
+                name="semester"
+                value={semester}
+                onChange={ev => setSemester(ev)}
+              />
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.registerField}>
+              <CustomDropdown
+                label="Soy un estudiante de"
+                value={semester}
+                open={openSemester}
+                items={semesterItems}
+                setOpen={setOpenSemester}
+                setValue={setSemester}
+                setItems={setSemesterItems}
+                searchable={false}
+                placeholder=""
+              />
+            </View>
+          </>
+        )}
         <View style={styles.registerField}>
           <CustomInputText
             label="Correo electrónico"
@@ -111,7 +162,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   bottomButtons: {
-    marginTop: 25,
+    marginTop: 0,
   },
   bottomButton: {
     borderRadius: 4,
