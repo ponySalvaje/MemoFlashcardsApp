@@ -13,5 +13,6 @@ export const colors = {
   disabled: '#9C9C9C',
   white: '#FFFFFF',
   transparent: 'transparent',
-  backgroundGray: '#52504E',
+  backgroundGray: '#ececef',
+  backgroundPurple: '#d0cfef',
 };

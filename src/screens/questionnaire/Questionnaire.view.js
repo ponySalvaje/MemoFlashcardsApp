@@ -176,6 +176,17 @@ const QuestionnaireScreen = ({route, navigation}) => {
                 </Pressable>
               </View>
             </Animated.View>
+            <Animated.View style={backAnimatedStyle}>
+              <View style={styles.helpGroup}>
+                <View style={styles.helpHeader}>
+                  <Text style={styles.helpHeaderText}>Ayuda</Text>
+                </View>
+                <RenderHTML
+                  contentWidth={100}
+                  source={{html: prepareHtml(cards[currentCard].help)}}
+                />
+              </View>
+            </Animated.View>
           </View>
         </>
       ) : (
@@ -368,6 +379,19 @@ const styles = StyleSheet.create({
   },
   levelText: {
     color: colors.backgroundWhite,
+  },
+  helpGroup: {
+    margin: 20,
+    backgroundColor: colors.backgroundGray,
+  },
+  helpHeader: {
+    backgroundColor: colors.backgroundPurple,
+    alignItems: 'center',
+  },
+  helpHeaderText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    padding: 5,
   },
 });
 
