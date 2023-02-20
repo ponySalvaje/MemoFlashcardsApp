@@ -1,4 +1,4 @@
-const BASE_URL = 'https://be00-201-234-116-106.ngrok.io';
+const BASE_URL = 'https://c9a1-201-234-116-106.ngrok.io';
 
 export const apiUrls = {
   BASE_URL,
@@ -6,4 +6,5 @@ export const apiUrls = {
   SPECIALTIES_URL: `${BASE_URL}/lessons`,
   TOPICS_URL: `${BASE_URL}/subjects`,
   CARDS_URL: `${BASE_URL}/cards`,
+  SCORE_URL: `${BASE_URL}/score`,
 };

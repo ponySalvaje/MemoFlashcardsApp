@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   Modal,
   Pressable,
@@ -18,6 +19,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {getCards} from '../../api/cards.api';
 import {useIsFocused} from '@react-navigation/native';
 import RenderHTML from 'react-native-render-html';
+import {scoreCard} from '../../api/scores.api';
 
 const {width} = Dimensions.get('window');
 const widthCard = width - 20;
@@ -75,11 +77,24 @@ const QuestionnaireScreen = ({route, navigation}) => {
     if (flipDegree.value == 1) flipDegree.value = 0;
   };
 
-  const gradeQuestion = difficulty => {
+  const goToNextCard = () => {
     flipCard();
     setTimeout(() => {
       setCurrentCard(previousCard => previousCard + 1);
     }, 500); // change question in the middle of animation
+  };
+
+  const gradeQuestion = async difficulty => {
+    try {
+      await scoreCard(cards[currentCard].id, difficulty);
+    } catch (error) {
+      console.log('error: ', error);
+      Alert.alert(
+        '¡Ups! Algo salió mal',
+        'Hubo un problema al evaluar la pregunta anterior',
+      );
+    }
+    goToNextCard();
   };
 
   const seePreviousCard = () => {
@@ -156,21 +171,21 @@ const QuestionnaireScreen = ({route, navigation}) => {
                 <Pressable
                   style={styles.easyLevelButton}
                   onPress={() => {
-                    gradeQuestion('easy');
+                    gradeQuestion('EASY');
                   }}>
                   <Text style={styles.levelText}>Fácil</Text>
                 </Pressable>
                 <Pressable
                   style={styles.normalLevelButton}
                   onPress={() => {
-                    gradeQuestion('medium');
+                    gradeQuestion('MEDIUM');
                   }}>
                   <Text style={styles.levelText}>Normal</Text>
                 </Pressable>
                 <Pressable
                   style={styles.hardLevelButton}
                   onPress={() => {
-                    gradeQuestion('hard');
+                    gradeQuestion('HARD');
                   }}>
                   <Text style={styles.levelText}>Difícil</Text>
                 </Pressable>
