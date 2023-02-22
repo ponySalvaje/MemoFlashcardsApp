@@ -78,7 +78,6 @@ const QuestionnaireScreen = ({route, navigation}) => {
   };
 
   const goToNextCard = () => {
-    flipCard();
     setTimeout(() => {
       setCurrentCard(previousCard => previousCard + 1);
     }, 500); // change question in the middle of animation
@@ -88,12 +87,12 @@ const QuestionnaireScreen = ({route, navigation}) => {
     try {
       await scoreCard(cards[currentCard].id, difficulty);
     } catch (error) {
-      console.log('error: ', error);
       Alert.alert(
         '¡Ups! Algo salió mal',
         'Hubo un problema al evaluar la pregunta anterior',
       );
     }
+    if (difficulty != 'SUSPENDED') flipCard();
     goToNextCard();
   };
 
@@ -145,6 +144,7 @@ const QuestionnaireScreen = ({route, navigation}) => {
               <View style={styles.discontinueCardButton}>
                 <Pressable
                   onPress={() => {
+                    gradeQuestion;
                     setDiscontinueCardModalVisible(
                       !discontinueCardModalVisible,
                     );
@@ -191,17 +191,21 @@ const QuestionnaireScreen = ({route, navigation}) => {
                 </Pressable>
               </View>
             </Animated.View>
-            <Animated.View style={backAnimatedStyle}>
-              <View style={styles.helpGroup}>
-                <View style={styles.helpHeader}>
-                  <Text style={styles.helpHeaderText}>Ayuda</Text>
+            {cards[currentCard].help != '' ? (
+              <Animated.View style={backAnimatedStyle}>
+                <View style={styles.helpGroup}>
+                  <View style={styles.helpHeader}>
+                    <Text style={styles.helpHeaderText}>Ayuda</Text>
+                  </View>
+                  <RenderHTML
+                    contentWidth={100}
+                    source={{html: prepareHtml(cards[currentCard].help)}}
+                  />
                 </View>
-                <RenderHTML
-                  contentWidth={100}
-                  source={{html: prepareHtml(cards[currentCard].help)}}
-                />
-              </View>
-            </Animated.View>
+              </Animated.View>
+            ) : (
+              <></>
+            )}
           </View>
         </>
       ) : (
@@ -230,9 +234,10 @@ const QuestionnaireScreen = ({route, navigation}) => {
                 <Text>Cancelar</Text>
               </Pressable>
               <Pressable
-                onPress={() =>
-                  setDiscontinueCardModalVisible(!discontinueCardModalVisible)
-                }
+                onPress={() => {
+                  setDiscontinueCardModalVisible(!discontinueCardModalVisible);
+                  gradeQuestion('SUSPENDED');
+                }}
                 style={styles.dismissQuestionButton}>
                 <Text style={styles.seeAnswerButtonText}>Suspender</Text>
               </Pressable>
