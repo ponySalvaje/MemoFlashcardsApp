@@ -149,13 +149,17 @@ const LoginScreen = ({navigation}) => {
                 <Pressable
                   onPress={loginHandler}
                   style={styles.loginButtonAction}>
-                  <Text style={{color: colors.white}}>Iniciar Sesión</Text>
+                  <Text style={{color: colors.white, fontFamily: 'Raleway'}}>
+                    Iniciar Sesión
+                  </Text>
                 </Pressable>
               </Animated.View>
               <Animated.View>
                 <Pressable onPress={onCloseState}>
                   <Animated.View style={styles.cancelButton}>
-                    <Text style={{color: colors.white}}>Cancelar</Text>
+                    <Text style={{color: colors.white, fontFamily: 'Raleway'}}>
+                      Cancelar
+                    </Text>
                   </Animated.View>
                 </Pressable>
               </Animated.View>
@@ -211,6 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textButton: {
+    fontFamily: 'Raleway',
     fontSize: 15,
     color: colors.white,
   },
@@ -221,7 +226,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     alignItems: 'center',
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontFamily: 'Raleway-Bold',
     fontSize: 20,
   },
   username: {
@@ -248,6 +253,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   forgotPasswordText: {
+    fontFamily: 'Raleway',
     color: '#727377',
     textAlign: 'center',
     marginTop: 20,

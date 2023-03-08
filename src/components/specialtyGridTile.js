@@ -67,14 +67,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontWeight: 'bold',
+    fontFamily: 'Raleway-Bold',
     fontSize: 16,
     textAlign: 'center',
   },
   free: {
+    fontFamily: 'Raleway',
     fontSize: 13,
   },
   premium: {
+    fontFamily: 'Raleway',
     fontSize: 13,
     color: colors.primary,
   },

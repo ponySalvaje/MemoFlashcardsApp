@@ -6,7 +6,7 @@ function TabText({item}) {
     <Text
       style={{
         color: item.focused ? colors.primary : colors.gray,
-        fontWeight: item.focused ? 'bold' : '',
+        fontFamily: item.focused ? 'Raleway-Bold' : 'Raleway',
       }}>
       {item.title}
     </Text>

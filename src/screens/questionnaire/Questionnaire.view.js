@@ -127,7 +127,7 @@ const QuestionnaireScreen = ({route, navigation}) => {
                   <Pressable
                     style={styles.previousQuestionButton}
                     onPress={seePreviousCard}>
-                    <Text>Ver Anterior</Text>
+                    <Text style={styles.seePreviousButtonText}>Ver Anterior</Text>
                   </Pressable>
                 )}
                 <Pressable
@@ -279,11 +279,11 @@ const styles = StyleSheet.create({
     top: 0,
   },
   cardTitle: {
+    fontFamily: 'Raleway-Bold',
     marginTop: 10,
     position: 'absolute',
     fontSize: 16,
     color: colors.primary,
-    fontWeight: 'bold',
     textAlign: 'center',
   },
   cardText: {
@@ -323,6 +323,7 @@ const styles = StyleSheet.create({
     bottom: 10,
   },
   discontinueCardText: {
+    fontFamily: 'Raleway',
     color: colors.skyblue,
   },
   previousQuestionButton: {
@@ -348,7 +349,11 @@ const styles = StyleSheet.create({
   notOnlyBottomButton: {
     flex: 1,
   },
+  seePreviousButtonText: {
+    fontFamily: 'Raleway',
+  },
   seeAnswerButtonText: {
+    fontFamily: 'Raleway',
     color: colors.secondary,
   },
   dismissQuestionButton: {
@@ -398,6 +403,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.red,
   },
   levelText: {
+    fontFamily: 'Raleway',
     color: colors.backgroundWhite,
   },
   helpGroup: {
@@ -409,8 +415,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   helpHeaderText: {
+    fontFamily: 'Raleway-Bold',
     fontSize: 14,
-    fontWeight: 'bold',
     padding: 5,
   },
 });

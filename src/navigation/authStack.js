@@ -34,7 +34,7 @@ const AuthStack = () => {
         component={SignUp}
         options={{
           title: 'Registrarse',
-          headerTitleStyle: {fontSize: 18},
+          headerTitleStyle: {fontSize: 18, fontFamily: 'Raleway-Bold'},
         }}
       />
     </Stack.Navigator>

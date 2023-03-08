@@ -14,7 +14,14 @@ const ProgressStack = () => {
         contentStyle: {backgroundColor: colors.backgroundWhite},
         initialRouteName: 'Progress',
       }}>
-      <Stack.Screen name="Mi progreso" component={Progress} />
+      <Stack.Screen
+        name="Progress"
+        component={Progress}
+        options={{
+          title: 'Mi progreso',
+          headerTitleStyle: {fontFamily: 'Raleway-Bold'},
+        }}
+      />
     </Stack.Navigator>
   );
 };

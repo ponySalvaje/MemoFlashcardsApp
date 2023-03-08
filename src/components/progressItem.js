@@ -44,10 +44,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   specialty: {
+    fontFamily: 'Raleway-Bold',
     fontSize: 16,
-    fontWeight: 'bold',
   },
   freeCards: {
+    fontFamily: 'Raleway',
     fontSize: 16,
     marginStart: 20,
   },
@@ -56,8 +57,8 @@ const styles = StyleSheet.create({
     paddingStart: 10,
   },
   percentageText: {
+    fontFamily: 'Raleway-Bold',
     fontSize: 16,
-    fontWeight: 'bold',
     paddingStart: 10,
   },
 });

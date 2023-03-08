@@ -14,7 +14,14 @@ const ProfileStack = () => {
         contentStyle: {backgroundColor: colors.backgroundWhite},
         initialRouteName: 'Profile',
       }}>
-      <Stack.Screen name="Mi perfil" component={Profile} />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          title: 'Mi perfil',
+          headerTitleStyle: {fontFamily: 'Raleway-Bold'},
+        }}
+      />
     </Stack.Navigator>
   );
 };

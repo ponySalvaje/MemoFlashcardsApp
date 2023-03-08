@@ -20,7 +20,7 @@ const CustomInputText = ({
 
   return (
     <View style={containerStyle}>
-      {label && <Text style={labelStyle}>{label}</Text>}
+      {label && <Text style={[labelStyle, styles.inputTitle]}>{label}</Text>}
       <View style={styles.inputContainer}>
         <>
           <TextInput
@@ -51,7 +51,11 @@ const CustomInputText = ({
 export default CustomInputText;
 
 const styles = StyleSheet.create({
+  inputTitle: {
+    fontFamily: 'Raleway',
+  },
   inputText: {
+    fontFamily: 'Raleway',
     marginTop: 10,
     padding: 10,
     height: 40,

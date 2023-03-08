@@ -17,14 +17,17 @@ const SpecialtiesStack = () => {
       <Stack.Screen
         name="Specialties"
         component={Specialties}
-        options={{title: 'Añade el tema que desees estudiar'}}
+        options={{
+          title: 'Añade el tema que desees estudiar',
+          headerTitleStyle: {fontFamily: 'Raleway-Bold'},
+        }}
       />
       <Stack.Screen
         name="Topics"
         component={Topics}
         options={({route}) => ({
           title: route.params.topicTitle || 'Temas de estudio',
-          headerTitleStyle: {fontSize: 15},
+          headerTitleStyle: {fontSize: 15, fontFamily: 'Raleway-Bold'},
         })}
       />
       <Stack.Screen

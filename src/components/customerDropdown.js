@@ -17,11 +17,12 @@ const CustomDropdown = ({
 }) => {
   return (
     <View>
-      {label && <Text>{label}</Text>}
+      {label && <Text style={{fontFamily: 'Raleway'}}>{label}</Text>}
       <View>
         <>
           <DropDownPicker
             style={styles.dropdownContainer}
+            textStyle={{fontFamily: 'Raleway'}}
             open={open}
             value={value}
             items={items}
@@ -42,6 +43,7 @@ export default CustomDropdown;
 
 const styles = StyleSheet.create({
   dropdownContainer: {
+    fontFamily: 'Raleway',
     marginTop: 10,
     borderWidth: 1,
     borderRadius: 5,
