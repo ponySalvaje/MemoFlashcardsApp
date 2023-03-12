@@ -20,6 +20,7 @@ import {getCards} from '../../api/cards.api';
 import {useIsFocused} from '@react-navigation/native';
 import RenderHTML from 'react-native-render-html';
 import {scoreCard} from '../../api/scores.api';
+import UpgradePremium from '../upgradePremium/UpgradePremium';
 
 const {width} = Dimensions.get('window');
 const widthCard = width - 20;
@@ -111,6 +112,14 @@ const QuestionnaireScreen = ({route, navigation}) => {
     <View style={styles.container}>
       {cards[currentCard] ? (
         <>
+          <View style={styles.topicTitle}>
+            <Text style={styles.topicTitleText}>
+              Tema: {route.params.topicName}
+            </Text>
+            <Text style={styles.progressIndicator}>
+              {currentCard + 1} / {cards.length} Tarjetas
+            </Text>
+          </View>
           <View>
             <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
               <Text style={styles.cardTitle}>{cards[currentCard].name}</Text>
@@ -127,7 +136,9 @@ const QuestionnaireScreen = ({route, navigation}) => {
                   <Pressable
                     style={styles.previousQuestionButton}
                     onPress={seePreviousCard}>
-                    <Text style={styles.seePreviousButtonText}>Ver Anterior</Text>
+                    <Text style={styles.seePreviousButtonText}>
+                      Ver Anterior
+                    </Text>
                   </Pressable>
                 )}
                 <Pressable
@@ -208,6 +219,9 @@ const QuestionnaireScreen = ({route, navigation}) => {
             )}
           </View>
         </>
+      ) : (cards.length > 0 && currentCard == cards.length) ||
+        cards.length === 0 ? (
+        <UpgradePremium />
       ) : (
         <></>
       )}
@@ -417,6 +431,24 @@ const styles = StyleSheet.create({
   helpHeaderText: {
     fontFamily: 'Raleway-Bold',
     fontSize: 14,
+    padding: 5,
+  },
+  topicTitle: {
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    paddingBottom: 15,
+  },
+  topicTitleText: {
+    flex: 1,
+    fontFamily: 'Raleway-Bold',
+    fontSize: 16,
+    padding: 5,
+  },
+  progressIndicator: {
+    flex: 1,
+    textAlign: 'right',
+    fontFamily: 'Raleway',
+    fontSize: 16,
     padding: 5,
   },
 });

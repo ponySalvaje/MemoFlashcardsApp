@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   loadingText: {
+    fontFamily: 'Raleway',
     fontSize: 25,
     color: colors.primary,
   },

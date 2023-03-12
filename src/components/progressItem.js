@@ -30,7 +30,9 @@ function ProgressItem({item, onPress}) {
           borderRadius={20}
           color={colors.primary}
         />
-        <Text style={styles.percentageText}>{item.percentageProgress}%</Text>
+        <Text style={styles.percentageText}>
+          {item.percentageProgress.toFixed(2)}%
+        </Text>
       </View>
     </View>
   );

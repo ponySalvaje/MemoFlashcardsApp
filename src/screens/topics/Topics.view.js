@@ -22,6 +22,7 @@ const TopicsScreen = ({route, navigation}) => {
     const pressHandler = () => {
       navigation.navigate('Questionnaire', {
         topicId: itemData.item.id,
+        topicName: itemData.item.title,
       });
     };
 
