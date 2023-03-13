@@ -21,6 +21,7 @@ import {useIsFocused} from '@react-navigation/native';
 import RenderHTML from 'react-native-render-html';
 import {scoreCard} from '../../api/scores.api';
 import UpgradePremium from '../upgradePremium/UpgradePremium';
+import LoadingScreen from '../../components/loadingScreen';
 
 const {width} = Dimensions.get('window');
 const widthCard = width - 20;
@@ -29,15 +30,18 @@ const QuestionnaireScreen = ({route, navigation}) => {
   const flipDegree = useSharedValue(0);
 
   const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [currentCard, setCurrentCard] = useState();
 
   const isFocused = useIsFocused();
 
   const cardsList = useCallback(async () => {
+    setLoading(true);
     const result = await getCards(route.params.topicId);
     setCards(result.data.content);
     setCurrentCard(0);
+    setLoading(false);
   }, [navigation, isFocused]);
 
   useEffect(() => {
@@ -108,159 +112,171 @@ const QuestionnaireScreen = ({route, navigation}) => {
     return newHtml;
   };
 
-  return (
-    <View style={styles.container}>
-      {cards[currentCard] ? (
-        <>
-          <View style={styles.topicTitle}>
-            <Text style={styles.topicTitleText}>
-              Tema: {route.params.topicName}
-            </Text>
-            <Text style={styles.progressIndicator}>
-              {currentCard + 1} / {cards.length} Tarjetas
-            </Text>
-          </View>
-          <View>
-            <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
-              <Text style={styles.cardTitle}>{cards[currentCard].name}</Text>
-              <View style={[styles.cardText, styles.cardTextFront]}>
-                <RenderHTML
-                  contentWidth={100}
-                  source={{html: prepareHtml(cards[currentCard].question)}}
-                />
-              </View>
-              <View style={styles.bottomButtons}>
-                {currentCard == 0 ? (
-                  <></>
-                ) : (
+  const renderQuestionnaire = () => {
+    return (
+      <View style={styles.container}>
+        {cards[currentCard] ? (
+          <>
+            <View style={styles.topicTitle}>
+              <Text style={styles.topicTitleText}>
+                Tema: {route.params.topicName}
+              </Text>
+              <Text style={styles.progressIndicator}>
+                {currentCard + 1} / {cards.length} Tarjetas
+              </Text>
+            </View>
+            <View>
+              <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
+                <Text style={styles.cardTitle}>{cards[currentCard].name}</Text>
+                <View style={[styles.cardText, styles.cardTextFront]}>
+                  <RenderHTML
+                    contentWidth={100}
+                    source={{html: prepareHtml(cards[currentCard].question)}}
+                  />
+                </View>
+                <View style={styles.bottomButtons}>
+                  {currentCard == 0 ? (
+                    <></>
+                  ) : (
+                    <Pressable
+                      style={styles.previousQuestionButton}
+                      onPress={seePreviousCard}>
+                      <Text style={styles.seePreviousButtonText}>
+                        Ver Anterior
+                      </Text>
+                    </Pressable>
+                  )}
                   <Pressable
-                    style={styles.previousQuestionButton}
-                    onPress={seePreviousCard}>
-                    <Text style={styles.seePreviousButtonText}>
-                      Ver Anterior
+                    onPress={flipCard}
+                    style={[
+                      styles.seeAnswerButton,
+                      currentCard == 0
+                        ? styles.onlyBottomButton
+                        : styles.notOnlyBottomButton,
+                    ]}>
+                    <Text style={styles.seeAnswerButtonText}>
+                      Ver Respuesta
                     </Text>
                   </Pressable>
-                )}
+                </View>
+                <View style={styles.discontinueCardButton}>
+                  <Pressable
+                    onPress={() => {
+                      gradeQuestion;
+                      setDiscontinueCardModalVisible(
+                        !discontinueCardModalVisible,
+                      );
+                    }}>
+                    <Text style={styles.discontinueCardText}>
+                      Suspender tarjeta
+                    </Text>
+                  </Pressable>
+                </View>
+              </Animated.View>
+              <Animated.View
+                style={[
+                  styles.flipCard,
+                  styles.flipCardBack,
+                  backAnimatedStyle,
+                ]}>
+                <View style={styles.flipCardGroup}>
+                  <Pressable onPress={flipCard} style={styles.flipIcon}>
+                    <Ionicons size={22} name="sync" />
+                  </Pressable>
+                </View>
+                <Text style={styles.cardTitle}>Respuesta</Text>
+                <RenderHTML
+                  contentWidth={100}
+                  source={{html: prepareHtml(cards[currentCard].answer)}}
+                />
+                <View style={styles.bottomLevelButtons}>
+                  <Pressable
+                    style={styles.easyLevelButton}
+                    onPress={() => {
+                      gradeQuestion('EASY');
+                    }}>
+                    <Text style={styles.levelText}>Fácil</Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.normalLevelButton}
+                    onPress={() => {
+                      gradeQuestion('MEDIUM');
+                    }}>
+                    <Text style={styles.levelText}>Normal</Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.hardLevelButton}
+                    onPress={() => {
+                      gradeQuestion('HARD');
+                    }}>
+                    <Text style={styles.levelText}>Difícil</Text>
+                  </Pressable>
+                </View>
+              </Animated.View>
+              {cards[currentCard].help != '' ? (
+                <Animated.View style={backAnimatedStyle}>
+                  <View style={styles.helpGroup}>
+                    <View style={styles.helpHeader}>
+                      <Text style={styles.helpHeaderText}>Ayuda</Text>
+                    </View>
+                    <RenderHTML
+                      contentWidth={100}
+                      source={{html: prepareHtml(cards[currentCard].help)}}
+                    />
+                  </View>
+                </Animated.View>
+              ) : (
+                <></>
+              )}
+            </View>
+          </>
+        ) : (cards.length > 0 && currentCard == cards.length) ||
+          cards.length === 0 ? (
+          <UpgradePremium navigation={navigation} />
+        ) : (
+          <></>
+        )}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={discontinueCardModalVisible}>
+          <View style={styles.container}>
+            <View style={styles.flipCard}>
+              <Text style={styles.cardTitle}>
+                ¿Estás seguro de que quieres suspender?
+              </Text>
+              <Text style={styles.cardTextModal}>
+                Suspender una tarjeta la sacará de tus sesiones de estudio de
+                ahora en adelante. Pero tranquilo, podrás volverla a activar en
+                el buscador de suspendidas.
+              </Text>
+              <View style={styles.bottomButtonsModal}>
                 <Pressable
-                  onPress={flipCard}
-                  style={[
-                    styles.seeAnswerButton,
-                    currentCard == 0
-                      ? styles.onlyBottomButton
-                      : styles.notOnlyBottomButton,
-                  ]}>
-                  <Text style={styles.seeAnswerButtonText}>Ver Respuesta</Text>
+                  onPress={() =>
+                    setDiscontinueCardModalVisible(!discontinueCardModalVisible)
+                  }
+                  style={styles.previousQuestionButton}>
+                  <Text>Cancelar</Text>
                 </Pressable>
-              </View>
-              <View style={styles.discontinueCardButton}>
                 <Pressable
                   onPress={() => {
-                    gradeQuestion;
                     setDiscontinueCardModalVisible(
                       !discontinueCardModalVisible,
                     );
-                  }}>
-                  <Text style={styles.discontinueCardText}>
-                    Suspender tarjeta
-                  </Text>
+                    gradeQuestion('SUSPENDED');
+                  }}
+                  style={styles.dismissQuestionButton}>
+                  <Text style={styles.seeAnswerButtonText}>Suspender</Text>
                 </Pressable>
               </View>
-            </Animated.View>
-            <Animated.View
-              style={[styles.flipCard, styles.flipCardBack, backAnimatedStyle]}>
-              <View style={styles.flipCardGroup}>
-                <Pressable onPress={flipCard} style={styles.flipIcon}>
-                  <Ionicons size={22} name="sync" />
-                </Pressable>
-              </View>
-              <Text style={styles.cardTitle}>Respuesta</Text>
-              <RenderHTML
-                contentWidth={100}
-                source={{html: prepareHtml(cards[currentCard].answer)}}
-              />
-              <View style={styles.bottomLevelButtons}>
-                <Pressable
-                  style={styles.easyLevelButton}
-                  onPress={() => {
-                    gradeQuestion('EASY');
-                  }}>
-                  <Text style={styles.levelText}>Fácil</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.normalLevelButton}
-                  onPress={() => {
-                    gradeQuestion('MEDIUM');
-                  }}>
-                  <Text style={styles.levelText}>Normal</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.hardLevelButton}
-                  onPress={() => {
-                    gradeQuestion('HARD');
-                  }}>
-                  <Text style={styles.levelText}>Difícil</Text>
-                </Pressable>
-              </View>
-            </Animated.View>
-            {cards[currentCard].help != '' ? (
-              <Animated.View style={backAnimatedStyle}>
-                <View style={styles.helpGroup}>
-                  <View style={styles.helpHeader}>
-                    <Text style={styles.helpHeaderText}>Ayuda</Text>
-                  </View>
-                  <RenderHTML
-                    contentWidth={100}
-                    source={{html: prepareHtml(cards[currentCard].help)}}
-                  />
-                </View>
-              </Animated.View>
-            ) : (
-              <></>
-            )}
-          </View>
-        </>
-      ) : (cards.length > 0 && currentCard == cards.length) ||
-        cards.length === 0 ? (
-        <UpgradePremium />
-      ) : (
-        <></>
-      )}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={discontinueCardModalVisible}>
-        <View style={styles.container}>
-          <View style={styles.flipCard}>
-            <Text style={styles.cardTitle}>
-              ¿Estás seguro de que quieres suspender?
-            </Text>
-            <Text style={styles.cardTextModal}>
-              Suspender una tarjeta la sacará de tus sesiones de estudio de
-              ahora en adelante. Pero tranquilo, podrás volverla a activar en el
-              buscador de suspendidas.
-            </Text>
-            <View style={styles.bottomButtonsModal}>
-              <Pressable
-                onPress={() =>
-                  setDiscontinueCardModalVisible(!discontinueCardModalVisible)
-                }
-                style={styles.previousQuestionButton}>
-                <Text>Cancelar</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setDiscontinueCardModalVisible(!discontinueCardModalVisible);
-                  gradeQuestion('SUSPENDED');
-                }}
-                style={styles.dismissQuestionButton}>
-                <Text style={styles.seeAnswerButtonText}>Suspender</Text>
-              </Pressable>
             </View>
           </View>
-        </View>
-      </Modal>
-    </View>
-  );
+        </Modal>
+      </View>
+    );
+  };
+
+  return <>{!loading ? renderQuestionnaire() : <LoadingScreen />}</>;
 };
 
 const styles = StyleSheet.create({

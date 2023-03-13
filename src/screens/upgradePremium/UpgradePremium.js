@@ -1,11 +1,11 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../common/constants';
 
 const {width} = Dimensions.get('window');
 const widthCard = width - 40;
 
-const UpgradePremium = () => {
+const UpgradePremium = ({navigation}) => {
   const benefitList = [
     {
       id: 1,
@@ -33,6 +33,10 @@ const UpgradePremium = () => {
     },
   ];
 
+  const goToCulqiCheckout = () => {
+    navigation.navigate('CulqiCheckout');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Finalizaste tus tarjetas gratuitas</Text>
@@ -53,6 +57,18 @@ const UpgradePremium = () => {
               </View>
             );
           })}
+        </View>
+        <View style={styles.bottomButtons}>
+          <Pressable style={styles.upgradeButton} onPress={goToCulqiCheckout}>
+            <Text style={styles.upgradeButtonText}>Pagar</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={styles.continueButton}>
+            <Text style={styles.continueButtonText}>Continuar Gratuito</Text>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -114,6 +130,36 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway',
     fontSize: 16,
     color: '#070518',
+  },
+  bottomButtons: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  upgradeButton: {
+    flex: 1,
+    marginStart: 10,
+    marginEnd: 5,
+    padding: 5,
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+  },
+  upgradeButtonText: {
+    fontFamily: 'Raleway',
+    color: '#fff',
+  },
+  continueButton: {
+    flex: 1,
+    marginStart: 10,
+    marginEnd: 5,
+    padding: 5,
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: colors.secondary,
+  },
+  continueButtonText: {
+    fontFamily: 'Raleway',
   },
 });
 

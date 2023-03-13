@@ -3,15 +3,19 @@ import {useCallback, useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 import TopicGridTile from '../../components/topicGridTile';
 import {getTopics} from '../../api/topics.api';
+import LoadingScreen from '../../components/loadingScreen';
 
 const TopicsScreen = ({route, navigation}) => {
   const [topics, setTopics] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const isFocused = useIsFocused();
 
   const topicsList = useCallback(async () => {
+    setLoading(true);
     const result = await getTopics(route.params.specialtyId);
     setTopics(result.data.content);
+    setLoading(false);
   }, [navigation, isFocused]);
 
   useEffect(() => {
@@ -29,14 +33,18 @@ const TopicsScreen = ({route, navigation}) => {
     return <TopicGridTile item={itemData.item} onPress={pressHandler} />;
   };
 
-  return (
-    <FlatList
-      data={topics}
-      keyExtractor={item => item.id}
-      renderItem={renderTopicItem}
-      numColumns={2}
-    />
-  );
+  const renderTopics = () => {
+    return (
+      <FlatList
+        data={topics}
+        keyExtractor={item => item.id}
+        renderItem={renderTopicItem}
+        numColumns={2}
+      />
+    );
+  };
+
+  return <>{!loading ? renderTopics() : <LoadingScreen />}</>;
 };
 
 export default TopicsScreen;

@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Questionnaire, Specialties, Topics} from '../screens';
+import {Questionnaire, Specialties, Topics, CulqiCheckout} from '../screens';
 import {colors} from '../common/constants';
 
 const Stack = createNativeStackNavigator();
@@ -33,6 +33,11 @@ const SpecialtiesStack = () => {
       <Stack.Screen
         name="Questionnaire"
         component={Questionnaire}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CulqiCheckout"
+        component={CulqiCheckout}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
