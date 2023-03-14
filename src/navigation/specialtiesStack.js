@@ -1,5 +1,11 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Questionnaire, Specialties, Topics, CulqiCheckout} from '../screens';
+import {
+  Questionnaire,
+  Specialties,
+  Topics,
+  CulqiCheckout,
+  CulqiError,
+} from '../screens';
 import {colors} from '../common/constants';
 
 const Stack = createNativeStackNavigator();
@@ -38,6 +44,11 @@ const SpecialtiesStack = () => {
       <Stack.Screen
         name="CulqiCheckout"
         component={CulqiCheckout}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CulqiError"
+        component={CulqiError}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

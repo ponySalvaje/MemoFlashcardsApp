@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 
-import {Text, TextInput, StyleSheet, View, Pressable} from 'react-native';
+import {Text, StyleSheet, View, Pressable} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const CustomDropdown = ({

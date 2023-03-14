@@ -6,3 +6,4 @@ export {default as Questionnaire} from './questionnaire/Questionnaire.view';
 export {default as Profile} from './profile/Profile.view';
 export {default as Progress} from './progress/Progress.view';
 export {default as CulqiCheckout} from './checkout/CulqiCheckout.view';
+export {default as CulqiError} from './checkout/CulqiError.view';
